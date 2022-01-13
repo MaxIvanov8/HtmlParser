@@ -1,15 +1,20 @@
 # Html parser
-<br />
-This repo contains .NET6 project of simple "a"-tags parser from html page.<br />First you need to choose ".txt" file with list of URLs. If the list contains an invalid string (not URL), the application will skip it. Then you need to click "Calculate". The secondary thread will begin calculating the number of "a"-tags for each row. <br /><br />
+This repo contains .NET6 project of simple "a"-tags parser from html page.<br /><br />
+First you need to choose ".txt" file with list of URLs. If the list contains an invalid string (not URL), the application will skip it. Then you need to click "Calculate". The secondary thread will begin calculating the number of "a"-tags for each row. <br /><br />
 After the work is completed, the line with the maximum number of tags will be highlighted in green. 
 
 ## Clone:
 
-Clone this repo to your local machine using: https://github.com/MaxIvanov8/Chat
+Clone this repo to your local machine using: https://github.com/MaxIvanov8/HtmlParser
 
-## Visual Studio Build
+## Stack technologies
 
-Build GitHubVS.sln using Visual Studio 2019.
+**Framework:** .NET 6.0, WPF.<br /><br />
+**Packages:**
+- Microsoft.Toolkit.Mvvm 7.1.2;
+- PropertyChanged.Fody 3.4.0.
+
+Project using MVVM-pattern.
 
 ## Prerequisites
 
