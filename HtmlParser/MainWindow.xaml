@@ -1,0 +1,61 @@
+﻿<Window x:Class="HtmlParser.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HtmlParser"
+        mc:Ignorable="d"
+        Title="Html parser" SizeToContent="Height" Width="340">
+    <Window.DataContext>
+        <local:ViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        <local:EqualityConverter x:Key="EqualityConverter"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="*" MinHeight="300"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="*" MinWidth="300"/>
+            <ColumnDefinition Width="10"/>
+        </Grid.ColumnDefinitions>
+        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+            <MenuItem Header="Open" Command="{Binding OpenCommand}"/>
+            <MenuItem Header="Clear" Command="{Binding ClearCommand}"/>
+        </Menu>
+        <DataGrid Grid.Row="2" Grid.Column="1" ItemsSource="{Binding UrlCollection}" AutoGenerateColumns="False" HeadersVisibility="Column" 
+                  IsReadOnly="True" HorizontalAlignment="Stretch">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="URL" Binding="{Binding Address}" Width="*"/>
+                <DataGridTextColumn Header="Count" Binding="{Binding Count}"/>
+            </DataGrid.Columns>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsCalculated}" Value="True">
+                            <Setter Property="Background" Value="Yellow"/>
+                        </DataTrigger>
+                        <DataTrigger Value="True">
+                            <DataTrigger.Binding>
+                                <MultiBinding Converter="{StaticResource EqualityConverter}">
+                                    <Binding Path="."/>
+                                    <Binding Path="DataContext.MaxElement" RelativeSource="{RelativeSource AncestorType=Window}"/>
+                                </MultiBinding>
+                            </DataTrigger.Binding>
+                            <Setter Property="Background" Value="Green"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+        </DataGrid>
+        <Button Grid.Row="4" Grid.Column="1" Content="{Binding CalculateButtonContent, UpdateSourceTrigger=PropertyChanged}" 
+                Command="{Binding CalculateCommand}" Width="150"/>
+    </Grid>
+</Window>
