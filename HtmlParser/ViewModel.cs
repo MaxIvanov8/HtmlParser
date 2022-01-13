@@ -21,9 +21,11 @@ namespace HtmlParser
 
         public AsyncRelayCommand OpenCommand { get;}
         public RelayCommand ClearCommand { get; }
+        public RelayCommand ResetCommand { get; }
         public AsyncRelayCommand CalculateCommand { get; }
         public ObservableCollection<Model> UrlCollection { get; private set; }
         public Model MaxElement { get; private set; }
+        public int CurrentCount { get; private set; }
         public string CalculateButtonContent => _isCalculating ? "Stop" : "Calculate";
 
         public ViewModel()
@@ -32,10 +34,19 @@ namespace HtmlParser
 
             OpenCommand = new AsyncRelayCommand(OpenMethodAsync, ()=>!_isCalculating);
             ClearCommand = new RelayCommand(ClearMethod, () => CanExecute() && !_isCalculating);
+            ResetCommand = new RelayCommand(ResetMethod, () => CanExecute() && !_isCalculating);
             CalculateCommand = new AsyncRelayCommand(CalculateMethod, CanExecute);
         }
 
         private bool CanExecute() => UrlCollection is { Count: > 0 };
+
+        private void ResetMethod()
+        {
+            CurrentCount = 0;
+            foreach (var item in UrlCollection)
+                item.ResetData();
+            NotifyCanExecuteChangedCommands();
+        }
 
         private async Task OpenMethodAsync()
         {
@@ -43,14 +54,15 @@ namespace HtmlParser
             {
                 InitialDirectory = Environment.CurrentDirectory,
                 Filter = "Txt files (*.txt)|*.txt",
-                Title = "Open file"
+                Title = "Open file",
+                RestoreDirectory = true
             };
             if (openFileDialog.ShowDialog() == true)
             {
+                CurrentCount = 0;
                 var lines = await File.ReadAllLinesAsync(openFileDialog.FileName);
                 GetUrlCollection(lines);
-                CalculateCommand.NotifyCanExecuteChanged();
-                ClearCommand.NotifyCanExecuteChanged();
+                NotifyCanExecuteChangedCommands();
             }
         }
 
@@ -68,12 +80,21 @@ namespace HtmlParser
             UrlCollection.Clear();
             CalculateCommand.NotifyCanExecuteChanged();
             ClearCommand.NotifyCanExecuteChanged();
+            ResetCommand.NotifyCanExecuteChanged();
+            CurrentCount = 0;
         }
 
         private void NotifyCanExecuteChangedCommands()
         {
             OpenCommand.NotifyCanExecuteChanged();
             ClearCommand.NotifyCanExecuteChanged();
+            ResetCommand.NotifyCanExecuteChanged();
+            CalculateCommand.NotifyCanExecuteChanged();
+        }
+
+        private void NotifyCanExecuteChangedCommandsButton()
+        {
+            NotifyCanExecuteChangedCommands();
             OnPropertyChanged(nameof(CalculateButtonContent));
         }
 
@@ -82,7 +103,7 @@ namespace HtmlParser
             if (!_isCalculating)
             {
                 _isCalculating = true;
-                NotifyCanExecuteChangedCommands();
+                NotifyCanExecuteChangedCommandsButton();
                 _tokenSource = new CancellationTokenSource();
                 try
                 {
@@ -99,17 +120,21 @@ namespace HtmlParser
 
             MaxElement = UrlCollection.MaxBy(item => item.Count)!;
             _isCalculating = false;
-            NotifyCanExecuteChangedCommands();
+            NotifyCanExecuteChangedCommandsButton();
         }
 
         private void CalculateTags()
         {
-            using var client = new WebClient();
-            foreach (var item in UrlCollection)
+            Parallel.ForEach(UrlCollection, (item, loopState) =>
             {
+                using var client = new WebClient();
                 if (_tokenSource.Token.IsCancellationRequested)
+                {
                     _tokenSource.Token.ThrowIfCancellationRequested();
-                if (item.IsCalculated) continue;
+                    loopState.Break();
+                }
+
+                if (item.IsCalculated) return;
                 string htmlCode;
                 try
                 {
@@ -118,10 +143,11 @@ namespace HtmlParser
                 catch (WebException)
                 {
                     _errorModelsList.Add(item);
-                    continue;
+                    return;
                 }
+                CurrentCount++;
                 item.SetData(htmlCode);
-            }
+            });
         }
 
         private void CheckErrors()

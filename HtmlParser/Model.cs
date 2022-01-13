@@ -19,5 +19,11 @@ namespace HtmlParser
             Count = Regex.Matches(input, "</a>").Count;
             IsCalculated = true;
         }
+
+        public void ResetData()
+        {
+            Count = 0;
+            IsCalculated = false;
+        }
     }
 }

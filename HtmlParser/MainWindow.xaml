@@ -29,7 +29,17 @@
         <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
             <MenuItem Header="Open" Command="{Binding OpenCommand}"/>
             <MenuItem Header="Clear" Command="{Binding ClearCommand}"/>
+            <MenuItem Header="Reset" Command="{Binding ResetCommand}"/>
         </Menu>
+        <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right">
+            <TextBlock.Text>
+                <MultiBinding StringFormat="{}{0}/{1}">
+                    <Binding Path="CurrentCount" />
+                    <Binding Path="UrlCollection.Count" />
+                </MultiBinding>
+            </TextBlock.Text>
+        </TextBlock>
+
         <DataGrid Grid.Row="2" Grid.Column="1" ItemsSource="{Binding UrlCollection}" AutoGenerateColumns="False" HeadersVisibility="Column" 
                   IsReadOnly="True" HorizontalAlignment="Stretch">
             <DataGrid.Columns>
