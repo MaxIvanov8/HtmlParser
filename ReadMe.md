@@ -1,8 +1,6 @@
-# Chat
+# Html parser
 
-This repo contains .NET project of simple client-server chat for Windows. Users can recieve and send messages to general chat.
-
-Project contains server app and client app. First you need to start server and find out the server address. Then users need to run client, enter name, server address and then they will have access to the chat.
+This repo contains .NET6 project of simple "<a>"-tags parser from html page. First you need to choose ".txt" file with list of URLs. If the list contains an invalid string (not URL), the application will skip it. Then you need to click "Calculate". The secondary thread will begin calculating the number of "<a>"-tags for each row. After the work is completed, the line with the maximum number of tags will be highlighted in green. 
 
 ## Clone:
 
