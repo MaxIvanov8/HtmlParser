@@ -19,7 +19,7 @@ Project using MVVM-pattern.
 
 ## Prerequisites
 
-Have Visual Studio 2015 or newer installed.
+Have Visual Studio 2022 or newer installed.
 
 ## Verify Installation
 
