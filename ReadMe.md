@@ -1,6 +1,7 @@
 # Html parser
 
-This repo contains .NET6 project of simple "<a>"-tags parser from html page. First you need to choose ".txt" file with list of URLs. If the list contains an invalid string (not URL), the application will skip it. Then you need to click "Calculate". The secondary thread will begin calculating the number of "<a>"-tags for each row. After the work is completed, the line with the maximum number of tags will be highlighted in green. 
+This repo contains .NET6 project of simple "a"-tags parser from html page.<br />First you need to choose ".txt" file with list of URLs. If the list contains an invalid string (not URL), the application will skip it. Then you need to click "Calculate". The secondary thread will begin calculating the number of "a"-tags for each row. <br />
+After the work is completed, the line with the maximum number of tags will be highlighted in green. 
 
 ## Clone:
 
