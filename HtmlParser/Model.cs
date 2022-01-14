@@ -14,9 +14,9 @@ namespace HtmlParser
             Address = address;
         }
 
-        public void SetData(string input)
+        public void SetData(string input, string str)
         {
-            Count = Regex.Matches(input, "</a>").Count;
+            Count = Regex.Matches(input, str).Count;
             IsCalculated = true;
         }
 

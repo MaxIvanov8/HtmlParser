@@ -27,7 +27,7 @@
             <ColumnDefinition Width="10"/>
         </Grid.ColumnDefinitions>
         <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
-            <MenuItem Header="Open" Command="{Binding OpenCommand}"/>
+            <MenuItem Header="Open" Command="{Binding OpenCommand}" x:Name="MenuItemOpen"/>
             <MenuItem Header="Clear" Command="{Binding ClearCommand}"/>
             <MenuItem Header="Reset" Command="{Binding ResetCommand}"/>
         </Menu>
@@ -39,7 +39,6 @@
                 </MultiBinding>
             </TextBlock.Text>
         </TextBlock>
-
         <DataGrid Grid.Row="2" Grid.Column="1" ItemsSource="{Binding UrlCollection}" AutoGenerateColumns="False" HeadersVisibility="Column" 
                   IsReadOnly="True" HorizontalAlignment="Stretch">
             <DataGrid.Columns>
@@ -65,7 +64,12 @@
                 </Style>
             </DataGrid.RowStyle>
         </DataGrid>
-        <Button Grid.Row="4" Grid.Column="1" Content="{Binding CalculateButtonContent, UpdateSourceTrigger=PropertyChanged}" 
-                Command="{Binding CalculateCommand}" Width="150"/>
+        <StackPanel Grid.Row="4" Grid.Column="1"  Orientation="Horizontal" HorizontalAlignment="Center">
+            <TextBlock Text="Substring:"/>
+            <TextBox Text="{Binding Str, UpdateSourceTrigger=PropertyChanged}" Width="50" Margin="5,0,0,0" IsEnabled="{Binding ElementName=MenuItemOpen, Path=IsEnabled}"/>
+            <Button Content="{Binding CalculateButtonContent, UpdateSourceTrigger=PropertyChanged}" 
+                    Command="{Binding CalculateCommand}" Margin="5,0,0,0" Width="120"/>
+        </StackPanel>
+       
     </Grid>
 </Window>

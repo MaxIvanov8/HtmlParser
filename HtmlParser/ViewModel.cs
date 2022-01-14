@@ -26,6 +26,16 @@ namespace HtmlParser
         public ObservableCollection<Model> UrlCollection { get; private set; }
         public Model MaxElement { get; private set; }
         public int CurrentCount { get; private set; }
+        private string _str;
+        public string Str
+        {
+            get => _str;
+            set
+            {
+                _str = value;
+                CalculateCommand.NotifyCanExecuteChanged();
+            }
+        }
         public string CalculateButtonContent => _isCalculating ? "Stop" : "Calculate";
 
         public ViewModel()
@@ -35,7 +45,7 @@ namespace HtmlParser
             OpenCommand = new AsyncRelayCommand(OpenMethodAsync, ()=>!_isCalculating);
             ClearCommand = new RelayCommand(ClearMethod, () => CanExecute() && !_isCalculating);
             ResetCommand = new RelayCommand(ResetMethod, () => CanExecute() && !_isCalculating);
-            CalculateCommand = new AsyncRelayCommand(CalculateMethod, CanExecute);
+            CalculateCommand = new AsyncRelayCommand(CalculateMethod, ()=>CanExecute() && !string.IsNullOrEmpty(_str));
         }
 
         private bool CanExecute() => UrlCollection is { Count: > 0 };
@@ -82,6 +92,7 @@ namespace HtmlParser
             ClearCommand.NotifyCanExecuteChanged();
             ResetCommand.NotifyCanExecuteChanged();
             CurrentCount = 0;
+            Str = string.Empty;
         }
 
         private void NotifyCanExecuteChangedCommands()
@@ -146,7 +157,7 @@ namespace HtmlParser
                     return;
                 }
                 CurrentCount++;
-                item.SetData(htmlCode);
+                item.SetData(htmlCode, Str);
             });
         }
 
@@ -162,5 +173,4 @@ namespace HtmlParser
             _errorModelsList.Clear();
         }
     }
-
 }
